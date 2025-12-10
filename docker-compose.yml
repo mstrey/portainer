@@ -1,0 +1,30 @@
+networks:
+  frontend:
+    name: frontend
+    external: true
+
+volumes:
+  portainer_data:
+
+services:
+  app:
+    image: portainer/portainer-ce
+    container_name: ${SERVICE}
+    hostname: ${SERVICE}
+    restart: unless-stopped
+    environment:
+      - TZ=America/Sao_Paulo
+    volumes:
+      - /etc/timezone:/etc/timezone:ro
+      - /etc/localtime:/etc/localtime:ro
+      - /var/run/docker.sock:/var/run/docker.sock
+      - portainer_data:/data
+    networks:
+      - frontend
+    labels:
+      - "traefik.enable=true"
+      - "traefik.http.services.${SERVICE}.loadbalancer.server.port=9000"
+
+      - "traefik.http.routers.${SERVICE}.rule=Host(`${SERVICE}.${DOMAIN}`)"
+      - "traefik.http.routers.${SERVICE}.entrypoints=web"
+      - "traefik.http.routers.${SERVICE}.middlewares=crowdsec-check,ssl-header"
