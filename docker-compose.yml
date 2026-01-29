@@ -32,7 +32,7 @@ services:
 
       - "traefik.http.routers.${SERVICE}.rule=Host(`${SERVICE}.${DOMAIN}`)"
       - "traefik.http.routers.${SERVICE}.entrypoints=web"
-      - "traefik.http.routers.${SERVICE}.middlewares=crowdsec-check"
+      - "traefik.http.routers.portainer.middlewares=ssl-header"
 
   autoheal:
     image: willfarrell/autoheal:latest
